@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block title %}{% if form.instance.pk %}Edit Post{% else %}Create Post{% endif %} | Edite Blog{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-8">
+        <h1>{% if form.instance.pk %}Edit Post{% else %}Create New Post{% endif %}</h1>
+    </div>
+    <div class="col-md-4 text-end">
+        <a href="{% if form.instance.pk %}{% url 'post_detail' form.instance.slug %}{% else %}{% url 'my_posts' %}{% endif %}" class="btn btn-outline-secondary">Cancel</a>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <form method="post">
+            {% csrf_token %}
+            
+            {% if form.errors %}
+                <div class="alert alert-danger">
+                    {% for field in form %}
+                        {% for error in field.errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+                    {% endfor %}
+                </div>
+            {% endif %}
+            
+            <div class="mb-3">
+                <label for="{{ form.title.id_for_label }}" class="form-label">Title</label>
+                {{ form.title }}
+            </div>
+            
+            <div class="mb-3">
+                <label for="{{ form.content.id_for_label }}" class="form-label">Content</label>
+                {{ form.content }}
+            </div>
+            
+            <div class="mb-3">
+                <label for="{{ form.status.id_for_label }}" class="form-label">Status</label>
+                {{ form.status }}
+                <div class="form-text">Draft posts are only visible to you. Published posts are visible to all users.</div>
+            </div>
+            
+            <div class="d-grid">
+                <button type="submit" class="btn btn-primary">{% if form.instance.pk %}Update Post{% else %}Create Post{% endif %}</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

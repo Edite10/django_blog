@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+
+{% block title %}Blog Posts | Edite Blog{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <h1>Blog Posts</h1>
+    </div>
+    <div class="col-md-4 text-end">
+        {% if user.is_authenticated %}
+            <a href="{% url 'post_create' %}" class="btn btn-primary">New Post</a>
+            <a href="{% url 'my_posts' %}" class="btn btn-outline-primary">My Posts</a>
+        {% endif %}
+    </div>
+</div>
+
+<div class="row mb-4 mt-3">
+    <div class="col-md-6">
+        <form method="get" class="d-flex">
+            <input type="text" name="q" class="form-control me-2" placeholder="Search posts..." value="{{ search_query }}">
+            <button type="submit" class="btn btn-outline-primary">Search</button>
+        </form>
+    </div>
+    <div class="col-md-6 text-end">
+        <div class="dropdown">
+            <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                Sort by: {% if sort == '-created_on' %}Newest first{% elif sort == 'created_on' %}Oldest first{% elif sort == 'title' %}Title (A-Z){% elif sort == '-title' %}Title (Z-A){% elif sort == 'likes' %}Most likes{% elif sort == 'loves' %}Most loves{% endif %}
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
+                <li><a class="dropdown-item {% if sort == '-created_on' %}active{% endif %}" href="?{% if search_query %}q={{ search_query }}&{% endif %}sort=-created_on">Newest first</a></li>
+                <li><a class="dropdown-item {% if sort == 'created_on' %}active{% endif %}" href="?{% if search_query %}q={{ search_query }}&{% endif %}sort=created_on">Oldest first</a></li>
+                <li><a class="dropdown-item {% if sort == 'title' %}active{% endif %}" href="?{% if search_query %}q={{ search_query }}&{% endif %}sort=title">Title (A-Z)</a></li>
+                <li><a class="dropdown-item {% if sort == '-title' %}active{% endif %}" href="?{% if search_query %}q={{ search_query }}&{% endif %}sort=-title">Title (Z-A)</a></li>
+                <li><a class="dropdown-item {% if sort == 'likes' %}active{% endif %}" href="?{% if search_query %}q={{ search_query }}&{% endif %}sort=likes">Most likes</a></li>
+                <li><a class="dropdown-item {% if sort == 'loves' %}active{% endif %}" href="?{% if search_query %}q={{ search_query }}&{% endif %}sort=loves">Most loves</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+{% if posts %}
+    <div class="row">
+        {% for post in posts %}
+            <div class="col-md-12 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ post.title }}</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">By {{ post.author.username }} | {{ post.created_on|date:"F j, Y" }}</h6>
+                        <p class="card-text">{{ post.content|truncatewords:30 }}</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <span class="badge bg-primary me-1">
+                                    <i class="bi bi-hand-thumbs-up"></i> {{ post.total_likes }}
+                                </span>
+                                <span class="badge bg-danger">
+                                    <i class="bi bi-heart"></i> {{ post.total_loves }}
+                                </span>
+                            </div>
+                            <a href="{% url 'post_detail' post.slug %}" class="btn btn-sm btn-outline-primary">Read more</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    
+    <!-- Pagination -->
+    {% if is_paginated %}
+    <nav aria-label="Page navigation">
+        <ul class="pagination justify-content-center">
+            {% if page_obj.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?{% if search_query %}q={{ search_query }}&{% endif %}{% if sort %}sort={{ sort }}&{% endif %}page=1">First</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?{% if search_query %}q={{ search_query }}&{% endif %}{% if sort %}sort={{ sort }}&{% endif %}page={{ page_obj.previous_page_number }}">Previous</a>
+                </li>
+            {% endif %}
+            
+            {% for num in page_obj.paginator.page_range %}
+                {% if page_obj.number == num %}
+                    <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+                {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                    <li class="page-item">
+                        <a class="page-link" href="?{% if search_query %}q={{ search_query }}&{% endif %}{% if sort %}sort={{ sort }}&{% endif %}page={{ num }}">{{ num }}</a>
+                    </li>
+                {% endif %}
+            {% endfor %}
+            
+            {% if page_obj.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?{% if search_query %}q={{ search_query }}&{% endif %}{% if sort %}sort={{ sort }}&{% endif %}page={{ page_obj.next_page_number }}">Next</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?{% if search_query %}q={{ search_query }}&{% endif %}{% if sort %}sort={{ sort }}&{% endif %}page={{ page_obj.paginator.num_pages }}">Last</a>
+                </li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
+{% else %}
+    <div class="alert alert-info">
+        No posts found. {% if search_query %}Try a different search term.{% endif %}
+    </div>
+{% endif %}
+{% endblock %}

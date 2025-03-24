@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block title %}Delete Post | Edite Blog{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-danger text-white">
+                <h2 class="text-center mb-0">Delete Post</h2>
+            </div>
+            <div class="card-body text-center">
+                <h5>Are you sure you want to delete "{{ object.title }}"?</h5>
+                <p class="text-muted">This action cannot be undone.</p>
+                <form method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">Yes, Delete</button>
+                    <a href="{% url 'post_detail' object.slug %}" class="btn btn-outline-secondary">Cancel</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

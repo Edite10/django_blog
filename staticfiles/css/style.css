@@ -1,0 +1,23 @@
+body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background-color: #f8f9fa;
+}
+
+main {
+    flex-grow: 1;
+}
+
+.card {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border: none;
+}
+
+.card-header {
+    padding: 1rem;
+}
+
+footer {
+    margin-top: auto;
+}

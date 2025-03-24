@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ post.title }} | Edite Blog{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-8">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'post_list' %}">Blog</a></li>
+                <li class="breadcrumb-item active" aria-current="page">{{ post.title|truncatechars:30 }}</li>
+            </ol>
+        </nav>
+    </div>
+    <div class="col-md-4 text-end">
+        {% if user == post.author %}
+            <a href="{% url 'post_update' post.slug %}" class="btn btn-sm btn-outline-secondary">Edit</a>
+            <a href="{% url 'post_delete' post.slug %}" class="btn btn-sm btn-outline-danger">Delete</a>
+        {% endif %}
+    </div>
+</div>
+
+<div class="card mb-4">
+    <div class="card-body">
+        <h1 class="card-title">{{ post.title }}</h1>
+        <h6 class="card-subtitle mb-3 text-muted">
+            By {{ post.author.username }} | {{ post.created_on|date:"F j, Y" }}
+            {% if post.created_on != post.updated_on %}
+                | Updated: {{ post.updated_on|date:"F j, Y" }}
+            {% endif %}
+        </h6>
+        
+        <div class="card-text mb-4">
+            {{ post.content|linebreaks }}
+        </div>
+        
+        <div class="d-flex align-items-center">
+            <form method="post" action="{% url 'post_like' post.slug %}" class="me-3">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-sm {% if liked %}btn-primary{% else %}btn-outline-primary{% endif %}">
+                    <i class="bi bi-hand-thumbs-up"></i> Like ({{ post.total_likes }})
+                </button>
+            </form>
+            
+            <form method="post" action="{% url 'post_love' post.slug %}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-sm {% if loved %}btn-danger{% else %}btn-outline-danger{% endif %}">
+                    <i class="bi bi-heart"></i> Love ({{ post.total_loves }})
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Comments Section -->
+<div class="card mb-4">
+    <div class="card-header bg-light">
+        <h4>Comments ({{ comments.count }})</h4>
+    </div>
+    <div class="card-body">
+        {% if user.is_authenticated %}
+            <form method="post" action="{% url 'add_comment' post.slug %}" class="mb-4">
+                {% csrf_token %}
+                <div class="mb-3">
+                    {{ comment_form.body }}
+                </div>
+                <button type="submit" class="btn btn-primary">Add Comment</button>
+            </form>
+        {% else %}
+            <div class="alert alert-info">
+                Please <a href="{% url 'account_login' %}">login</a> to comment.
+            </div>
+        {% endif %}
+        
+        <hr>
+        
+        {% if comments %}
+            {% for comment in comments %}
+                <div class="comment mb-3">
+                    <div class="d-flex">
+                        <div class="flex-grow-1">
+                            <h6 class="mb-1">{{ comment.author.username }} <small class="text-muted">{{ comment.created_on|date:"F j, Y" }}</small></h6>
+                            <p>{{ comment.body|linebreaks }}</p>
+                        </div>
+                    </div>
+                </div>
+                {% if not forloop.last %}
+                    <hr>
+                {% endif %}
+            {% endfor %}
+        {% else %}
+            <p class="text-muted">No comments yet. Be the first to comment!</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Add Bootstrap Icons
+    document.addEventListener('DOMContentLoaded', function() {
+        let link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.href = 'https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.0/font/bootstrap-icons.css';
+        document.head.appendChild(link);
+    });
+</script>
+{% endblock %}
