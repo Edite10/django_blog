@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+
+{% block title %}Search Results | Edite Blog{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-8">
+        <h1>Search Results</h1>
+        {% if query %}
+            <p class="lead">Results for "{{ query }}"</p>
+        {% endif %}
+    </div>
+    <div class="col-md-4">
+        <form method="get" class="d-flex">
+            <input type="text" name="q" class="form-control me-2" placeholder="Search..." value="{{ query }}">
+            <button type="submit" class="btn btn-outline-primary">Search</button>
+        </form>
+    </div>
+</div>
+
+<div class="row mb-3">
+    <div class="col-md-6">
+        <span>Filter by:</span>
+        <div class="btn-group ms-2">
+            <a href="?q={{ query }}&filter=all" class="btn btn-sm {% if filter == 'all' %}btn-primary{% else %}btn-outline-primary{% endif %}">All</a>
+            <a href="?q={{ query }}&filter=title" class="btn btn-sm {% if filter == 'title' %}btn-primary{% else %}btn-outline-primary{% endif %}">Title</a>
+            <a href="?q={{ query }}&filter=content" class="btn btn-sm {% if filter == 'content' %}btn-primary{% else %}btn-outline-primary{% endif %}">Content</a>
+            <a href="?q={{ query }}&filter=author" class="btn btn-sm {% if filter == 'author' %}btn-primary{% else %}btn-outline-primary{% endif %}">Author</a>
+        </div>
+    </div>
+</div>
+
+{% if posts %}
+    <div class="row">
+        {% for post in posts %}
+            <div class="col-md-12 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ post.title }}</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">By {{ post.author.username }} | {{ post.created_on|date:"F j, Y" }}</h6>
+                        <div class="card-text">{{ post.content|striptags|truncatewords:30 }}</div>
+                        <div class="d-flex justify-content-between align-items-center mt-3">
+                            <div>
+                                <span class="badge bg-primary me-1">
+                                    <i class="bi bi-hand-thumbs-up"></i> {{ post.total_likes }}
+                                </span>
+                                <span class="badge bg-danger">
+                                    <i class="bi bi-heart"></i> {{ post.total_loves }}
+                                </span>
+                            </div>
+                            <a href="{% url 'post_detail' post.slug %}" class="btn btn-sm btn-outline-primary">Read more</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    
+    {% if is_paginated %}
+        <nav aria-label="Page navigation">
+            <ul class="pagination justify-content-center">
+                {% if page_obj.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?q={{ query }}&filter={{ filter }}&page=1">First</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?q={{ query }}&filter={{ filter }}&page={{ page_obj.previous_page_number }}">Previous</a>
+                    </li>
+                {% endif %}
+                
+                {% for num in page_obj.paginator.page_range %}
+                    {% if page_obj.number == num %}
+                        <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+                    {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                        <li class="page-item">
+                            <a class="page-link" href="?q={{ query }}&filter={{ filter }}&page={{ num }}">{{ num }}</a>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+                
+                {% if page_obj.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?q={{ query }}&filter={{ filter }}&page={{ page_obj.next_page_number }}">Next</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?q={{ query }}&filter={{ filter }}&page={{ page_obj.paginator.num_pages }}">Last</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+    {% endif %}
+{% else %}
+    <div class="alert alert-info">
+        {% if query %}
+            No results found for "{{ query }}". Try a different search term.
+        {% else %}
+            Enter a search term to find blog posts.
+        {% endif %}
+    </div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,92 @@
+:root {
+  --background-color-light: #fff9f5;  /* Warm white */
+  --text-color-light: #5e4b42;        /* Warm brown */
+  --link-color-light: #d64c37;        /* Warm red */
+  --border-color-light: #e8d6c9;      /* Light warm tan */
+  
+  --background-color-dark: #2c1e17;   /* Dark warm brown */
+  --text-color-dark: #f3d9c2;         /* Light warm tan */
+  --link-color-dark: #f7a076;         /* Peach */
+  --border-color-dark: #4e3829;       /* Medium warm brown */
+}
+
+body {
+  background-color: var(--background-color-light);
+  color: var(--text-color-light);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+a {
+  color: var(--link-color-light);
+  transition: color 0.3s ease;
+}
+
+.card, .list-group-item {
+  background-color: var(--background-color-light);
+  border-color: var(--border-color-light);
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+/* Dark Mode */
+body.dark-mode {
+  background-color: var(--background-color-dark);
+  color: var(--text-color-dark);
+}
+
+body.dark-mode a:not(.btn) {
+  color: var(--link-color-dark);
+}
+
+body.dark-mode .card, 
+body.dark-mode .list-group-item {
+  background-color: #3a2a20;
+  border-color: var(--border-color-dark);
+}
+
+body.dark-mode .navbar {
+  background-color: #261a14 !important;
+}
+
+body.dark-mode .form-control,
+body.dark-mode .form-select {
+  background-color: #3a2a20;
+  color: var(--text-color-dark);
+  border-color: var(--border-color-dark);
+}
+
+/* Fix dropdowns in dark mode */
+body.dark-mode .dropdown-menu {
+  background-color: #3a2a20;
+  border-color: var(--border-color-dark);
+}
+
+body.dark-mode .dropdown-item {
+  color: var(--text-color-dark);
+}
+
+body.dark-mode .dropdown-item:hover,
+body.dark-mode .dropdown-item:focus {
+  background-color: #4e3829;
+  color: var(--text-color-dark);
+}
+
+/* Fix footer in dark mode */
+body.dark-mode .footer {
+  background-color: #261a14 !important;
+}
+
+/* Fix alerts in dark mode */
+body.dark-mode .alert {
+  border-color: var(--border-color-dark);
+}
+
+/* Fix Bootstrap components in dark mode */
+[data-bs-theme="dark"] .btn-outline-light {
+  color: #f3d9c2;
+  border-color: #f3d9c2;
+}
+
+[data-bs-theme="dark"] .btn-outline-light:hover {
+  background-color: #f3d9c2;
+  color: #2c1e17;
+}

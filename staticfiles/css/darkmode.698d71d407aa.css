@@ -1,0 +1,92 @@
+:root {
+  --background-color-light: #ffffff;
+  --text-color-light: #333333;
+  --link-color-light: #0066cc;
+  --border-color-light: #dddddd;
+  
+  --background-color-dark: #121212;
+  --text-color-dark: #e0e0e0;
+  --link-color-dark: #4da6ff;
+  --border-color-dark: #444444;
+}
+
+body {
+  background-color: var(--background-color-light);
+  color: var(--text-color-light);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+a {
+  color: var(--link-color-light);
+  transition: color 0.3s ease;
+}
+
+.card, .list-group-item {
+  background-color: var(--background-color-light);
+  border-color: var(--border-color-light);
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+/* Dark Mode */
+body.dark-mode {
+  background-color: var(--background-color-dark);
+  color: var(--text-color-dark);
+}
+
+body.dark-mode a:not(.btn) {
+  color: var(--link-color-dark);
+}
+
+body.dark-mode .card, 
+body.dark-mode .list-group-item {
+  background-color: var(--background-color-dark);
+  border-color: var(--border-color-dark);
+}
+
+body.dark-mode .navbar {
+  background-color: #1a1a1a !important;
+}
+
+body.dark-mode .form-control,
+body.dark-mode .form-select {
+  background-color: #2d2d2d;
+  color: var(--text-color-dark);
+  border-color: var(--border-color-dark);
+}
+
+/* Fix dropdowns in dark mode */
+body.dark-mode .dropdown-menu {
+  background-color: #2d2d2d;
+  border-color: var(--border-color-dark);
+}
+
+body.dark-mode .dropdown-item {
+  color: var(--text-color-dark);
+}
+
+body.dark-mode .dropdown-item:hover,
+body.dark-mode .dropdown-item:focus {
+  background-color: #3d3d3d;
+  color: var(--text-color-dark);
+}
+
+/* Fix footer in dark mode */
+body.dark-mode .footer {
+  background-color: #1a1a1a !important;
+}
+
+/* Fix alerts in dark mode */
+body.dark-mode .alert {
+  border-color: var(--border-color-dark);
+}
+
+/* Fix Bootstrap components in dark mode */
+[data-bs-theme="dark"] .btn-outline-light {
+  color: #f8f9fa;
+  border-color: #f8f9fa;
+}
+
+[data-bs-theme="dark"] .btn-outline-light:hover {
+  background-color: #f8f9fa;
+  color: #212529;
+}

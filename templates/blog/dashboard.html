@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard | Edite Blog{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <h1>Dashboard</h1>
+    </div>
+    <div class="col-md-4 text-end">
+        <a href="{% url 'post_create' %}" class="btn btn-primary">New Post</a>
+        <a href="{% url 'my_posts' %}" class="btn btn-outline-primary">My Posts</a>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <!-- Statistics Cards -->
+    <div class="col-md-4 mb-4">
+        <div class="card bg-primary text-white h-100">
+            <div class="card-body">
+                <h5 class="card-title">Posts</h5>
+                <p class="display-4">{{ total_posts }}</p>
+                <p>Published: {{ published_posts }} | Drafts: {{ draft_posts }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-4">
+        <div class="card bg-success text-white h-100">
+            <div class="card-body">
+                <h5 class="card-title">Interactions</h5>
+                <p class="display-4">{{ total_likes|add:total_loves|add:total_comments }}</p>
+                <p>Likes: {{ total_likes }} | Loves: {{ total_loves }} | Comments: {{ total_comments }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-4">
+        <div class="card bg-info text-white h-100">
+            <div class="card-body">
+                <h5 class="card-title">Most Popular Post</h5>
+                {% if most_popular %}
+                    <h6>{{ most_popular.title|truncatechars:30 }}</h6>
+                    <p>
+                        <i class="bi bi-hand-thumbs-up"></i> {{ most_popular.total_likes }}
+                        <i class="bi bi-heart ms-2"></i> {{ most_popular.total_loves }}
+                    </p>
+                    <a href="{% url 'post_detail' most_popular.slug %}" class="btn btn-sm btn-light mt-2">View Post</a>
+                {% else %}
+                    <p>No posts yet</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Recent Activity -->
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5>Recent Activity</h5>
+            </div>
+            <div class="card-body">
+                {% if total_posts > 0 %}
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Post</th>
+                                <th>Status</th>
+                                <th>Created</th>
+                                <th>Likes</th>
+                                <th>Loves</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for post in recent_posts %}
+                                <tr>
+                                    <td>{{ post.title|truncatechars:30 }}</td>
+                                    <td>
+                                        {% if post.status == 1 %}
+                                            <span class="badge bg-success">Published</span>
+                                        {% else %}
+                                            <span class="badge bg-warning text-dark">Draft</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ post.created_on|date:"M d, Y" }}</td>
+                                    <td>{{ post.total_likes }}</td>
+                                    <td>{{ post.total_loves }}</td>
+                                    <td>
+                                        <a href="{% url 'post_detail' post.slug %}" class="btn btn-sm btn-outline-primary">View</a>
+                                        <a href="{% url 'post_update' post.slug %}" class="btn btn-sm btn-outline-secondary">Edit</a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                    <p class="text-muted">You haven't created any posts yet.</p>
+                    <a href="{% url 'post_create' %}" class="btn btn-primary">Create your first post</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

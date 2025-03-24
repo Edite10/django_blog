@@ -14,7 +14,7 @@ from pathlib import Path
 import os
 import dj_database_url
 if os.path.isfile("env.py"):
-    import env
+    import env  # noqa: F401 - imports env variables
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -28,7 +28,7 @@ SECRET_KEY = os.environ.get("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['.gitpod.io']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '.herokuapp.com']
 
 
 # Application definition
@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
+    'tinymce',  # Add TinyMCE
     'blog',
 ]
 
@@ -143,7 +144,9 @@ SITE_ID = 1  # new
 # AllAuth Configuration - updating to latest format
 # Replace deprecated settings
 ACCOUNT_LOGIN_METHODS = {'username'}  # Replaces ACCOUNT_AUTHENTICATION_METHOD
-ACCOUNT_SIGNUP_FIELDS = ['username*', 'password1*', 'password2*']  # Makes username required, email not required
+ACCOUNT_SIGNUP_FIELDS = [
+    'username*', 'password1*', 'password2*'
+    ]  # Makes username required, email not required
 ACCOUNT_EMAIL_VERIFICATION = 'none'  # This setting is still valid
 ACCOUNT_LOGOUT_ON_PASSWORD_CHANGE = True  # This setting is still valid
 ACCOUNT_ADAPTER = 'blog.adapters.CustomAccountAdapter'
@@ -174,6 +177,27 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # Whitenoise settings
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+# TinyMCE Configuration - Simplified to avoid potential issues
+TINYMCE_DEFAULT_CONFIG = {
+    'height': 360,
+    'width': '100%',
+    'cleanup_on_startup': True,
+    'custom_undo_redo_levels': 20,
+    'selector': 'textarea',
+    'theme': 'silver',
+    'plugins': 'link image lists advlist fullscreen media code table',
+    'toolbar': 'undo redo | formatselect | bold '
+    'italic | alignleft aligncenter align'
+    'right alignjustify | bullist numlist '
+    'outdent indent | link image media | code',
+    'menubar': False,
+    'statusbar': True,
+    'convert_urls': False,
+    'relative_urls': False,
+}
+TINYMCE_SPELLCHECKER = True
+TINYMCE_COMPRESSOR = True
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field

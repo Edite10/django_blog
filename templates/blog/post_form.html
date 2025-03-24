@@ -8,7 +8,10 @@
         <h1>{% if form.instance.pk %}Edit Post{% else %}Create New Post{% endif %}</h1>
     </div>
     <div class="col-md-4 text-end">
-        <a href="{% if form.instance.pk %}{% url 'post_detail' form.instance.slug %}{% else %}{% url 'my_posts' %}{% endif %}" class="btn btn-outline-secondary">Cancel</a>
+        <a href="{% if form.instance.pk %}{% url 'post_detail' form.instance.slug %}{% else %}{% url 'my_posts' %}{% endif %}" 
+           class="btn btn-outline-secondary">
+            <i class="bi bi-x-circle me-1"></i>Cancel
+        </a>
     </div>
 </div>
 
@@ -21,7 +24,7 @@
                 <div class="alert alert-danger">
                     {% for field in form %}
                         {% for error in field.errors %}
-                            <p>{{ error }}</p>
+                            <p>{{ field.label }}: {{ error }}</p>
                         {% endfor %}
                     {% endfor %}
                 </div>
@@ -30,11 +33,13 @@
             <div class="mb-3">
                 <label for="{{ form.title.id_for_label }}" class="form-label">Title</label>
                 {{ form.title }}
+                <div class="form-text">Make your title descriptive and engaging.</div>
             </div>
             
             <div class="mb-3">
-                <label for="{{ form.content.id_for_label }}" class="form-label">Content</label>
+                <label for="id_content" class="form-label">Content</label>
                 {{ form.content }}
+                <div class="form-text mt-2">Use the rich text editor to format your content.</div>
             </div>
             
             <div class="mb-3">
@@ -43,10 +48,43 @@
                 <div class="form-text">Draft posts are only visible to you. Published posts are visible to all users.</div>
             </div>
             
-            <div class="d-grid">
-                <button type="submit" class="btn btn-primary">{% if form.instance.pk %}Update Post{% else %}Create Post{% endif %}</button>
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-{% if form.instance.pk %}save{% else %}plus-circle{% endif %} me-1"></i>
+                    {% if form.instance.pk %}Update Post{% else %}Create Post{% endif %}
+                </button>
             </div>
         </form>
     </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+{{ form.media }}
+<script>
+    // Initialize TinyMCE directly with improved accessibility
+    document.addEventListener('DOMContentLoaded', function() {
+        tinymce.init({
+            selector: 'textarea#id_content',
+            height: 400,
+            plugins: 'link image lists advlist fullscreen media code table a11y',
+            toolbar: 'undo redo | formatselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image media | code | a11y',
+            menubar: false,
+            statusbar: true,
+            width: '100%',
+            a11y_advanced_options: true,
+            content_style: `
+                body {
+                    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+                    font-size: 16px;
+                    line-height: 1.6;
+                }
+                [data-bs-theme="dark"] body {
+                    background-color: #1e1e1e;
+                    color: #e6e6e6;
+                }
+            `,
+        });
+    });
+</script>
 {% endblock %}
