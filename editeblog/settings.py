@@ -42,6 +42,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.sites',
+    'cloudinary_storage',
+    'cloudinary',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
