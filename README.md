@@ -249,6 +249,11 @@ The human developer was essential for:
 9. **Multi-language Support**: Internationalization and localization
 10. **Progressive Web App**: Offline support and mobile app features
 
+## Challenges
+#### Lack of commits
+
+   Due to technical reasons, I had to delay the development of my project. As a result, it was not possible to work on my computer, so the solution was that I could work on another computer. However, to be able to do a Git push, the files had to be transferred back to my computer. When transferring the files, the commits were lost.
+
 
 ## License
 This project is licensed under the MIT License - see the LICENSE file for details.
